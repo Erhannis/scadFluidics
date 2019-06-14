@@ -106,7 +106,7 @@ module bistableSwitch(
     ventReach = 40
   ) {
     if (ventDiam == undef) {
-      bistableSwitch(channelDiam, leadIn, size, sideLengths, ventDiam=channelDiam*4);
+      bistableSwitch(channelDiam, leadIn, size, sideLengths, ventDiam=channelDiam*4, ventReach=ventReach);
     } else {
       d1 = channelDiam;
       d2 = size*channelDiam*5;
@@ -164,17 +164,34 @@ union() {
 //channel([0,10],[0,0], cap="circle");
 
 {
-  sx=50;
-  sy=70;
+  sx=80;
+  sy=80;
   oy=-20;
   screw_inset = 4;
   cover_screw_slop = 0.5;
+
+  channelDiam = 3;
+  sideLengths = 35;
+  ventReach = 26;
 
   difference() { // Body
     translate([-sx/2,oy, -3])
       cube([sx, sy, 10]);
     linear_extrude(height=FOREVER)
-      bistableSwitch();
+      union() {
+        bistableSwitch(channelDiam=channelDiam, sideLengths=sideLengths, ventReach=ventReach);
+        
+        for (i=[0,1]) {
+          mirror([i,0,0]) {
+            channel([-sideLengths,-channelDiam/2],[-sideLengths, 50], d=channelDiam, cap="circle");
+            channel([-sideLengths, 50],[-13.25, 52], d=channelDiam, cap="circle");
+          }
+        }
+      }
+    for (i=[0,1])
+      mirror([i,0,0])
+      translate([ventReach,25.5,0])
+      cylinder(d=channelDiam*4, h=FOREVER, center=true);
     for (o=[[-1,1],[1,1],[-1,-1],[1,-1]]) {
       translate([o[0]*(sx/2-screw_inset),o[1]*(sy/2-screw_inset) + sy/2 + oy,0])
         cylinder(d=3, h=FOREVER, center=true);

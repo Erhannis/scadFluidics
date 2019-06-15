@@ -1,10 +1,10 @@
-Beam deflection amplifier
-Bistable switch
-Beam deflection inverter / NOR
-(Turbulence NOR)
-(Impact NOR)
-Vortex diode
-Vortex triode
+  Beam deflection amplifier
+x Bistable switch
+  Beam deflection inverter / NOR
+o (Turbulence NOR)
+o (Impact NOR)
+  Vortex diode
+  Vortex triode
 
 The equations seem to indicate that a high-viscosity fluid results in more laminar flow; that sounds completely backwards!
 Page 12: 1 psi (half lung power)

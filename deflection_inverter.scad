@@ -1,18 +1,38 @@
 use <common.scad>
 
 FOREVER = 1000;
+$fn = 60;
 
-module bistableSwitch(
+module deflectionInverter(
     channelDiam = 3,
     leadIn = 20,
+    leadOut = 20,
     size = 1.5,
-    sideLengths = 25,
+    inputLengths = 25,
     ventDiam = undef,
-    ventReach = 40
+    ventOutLength = 25,
+    ventAreaWidth = 10,
+    ventAreaLength = 40
   ) {
     if (ventDiam == undef) {
-      bistableSwitch(channelDiam, leadIn, size, sideLengths, ventDiam=channelDiam*4, ventReach=ventReach);
+      deflectionInverter(channelDiam, leadIn, leadOut, size, inputLengths, ventDiam=channelDiam*2, ventOutLength=ventOutLength, ventAreaWidth=ventAreaWidth, ventAreaLength=ventAreaLength);
     } else {
+      channel([0,-leadIn],[0,ventAreaLength+leadOut],d=channelDiam);
+      
+      channel([inputLengths,channelDiam/2],[0,channelDiam/2],d=channelDiam);
+      
+      channel([0,ventAreaLength-ventDiam/2],[ventOutLength,ventAreaLength-ventDiam/2],d=ventDiam);
+      
+      channel([-ventDiam/2,ventAreaLength-ventDiam/2],
+              [-ventDiam/2-ventAreaWidth+ventDiam,ventAreaLength-ventDiam/2+ventAreaWidth-ventDiam],d=ventDiam,cap="circle");
+      channel([-ventDiam/2-ventAreaWidth+ventDiam,ventAreaLength-ventDiam/2+ventAreaWidth-ventDiam],
+              [-ventOutLength,ventAreaLength-ventDiam/2+ventAreaWidth-ventDiam],d=ventDiam,cap="circle");
+      
+      channel([-ventAreaWidth/2,0],[-ventAreaWidth/2,ventAreaLength],d=ventAreaWidth);
+      
+      channel([-ventAreaWidth+ventDiam/2,0],[-ventOutLength,0],d=ventDiam,cap="circle");
+      
+      /*
       d1 = channelDiam;
       d2 = size*channelDiam*5;
       h = size*channelDiam*7;
@@ -46,25 +66,27 @@ module bistableSwitch(
             }
         }
       }
+      */
     }
 }
 
+
 {
   sx=50;
-  sy=70;
+  sy=80;
   oy=-20;
   screw_inset = 3;
   cover_screw_slop = 0.5;
   rescale = 0.5;
 
-  translate([0,0,-1])
+  translate([0,0,0])
   difference() { // Body
     scale(rescale)
       translate([-sx/2,oy, -3])
       cube([sx, sy, 10]);
     scale(rescale)
       linear_extrude(height=FOREVER)
-      bistableSwitch();
+      deflectionInverter();
     
     for (o=[[-1,1],[1,1],[-1,-1],[1,-1]]) {
       r=rescale;
@@ -73,7 +95,7 @@ module bistableSwitch(
     }
   }
   
-  translate([sx*1.1, 0, 0])
+  translate([sx*0.6, 0, 0])
   difference() { // Cover
     scale(rescale)
       translate([-sx/2,oy, -3])
@@ -85,3 +107,6 @@ module bistableSwitch(
     }
   }
 }
+
+
+//deflectionInverter();

@@ -55,6 +55,7 @@ module narrows(d1=10, d2=5, doMirror=0, center=false) {
 }
 
 function mod(x, n) = (x % n + n) % n;
+// Caution: I suspect interpolateRotate can freeze openscad when, say, certain variables are undefined.
 function interpolateRotate(x, y, a, dir=1, g=undef) = (g == undef) ? interpolateRotate(x, y, a, g=-dir*mod(dir*(atan2(x[1],x[0])-atan2(y[1],y[0])),360)) : [[cos(a*g), -sin(a*g)],[sin(a*g),  cos(a*g)]]*x;
 function clamp(a, v, b) = max(a,min(b,v));
 function rot(x, g) = [[cos(g), -sin(g)],[sin(g),  cos(g)]]*x;
@@ -127,18 +128,18 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
       channel(from=from, to=from+lead1*normalize(dir1));
       channel(from=to, to=to+lead2*normalize(dir2));
       translate(center) {
-          translate(-center)
-            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=(dist1<0 && dist2<0)?1:-1, r=radius*4);
+          //translate(-center)
+//            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=sign(cross(from-center,dir1)), r=abs(radius*4));
         difference() {
           circle(r=abs(arcRadius)+0.5);
           circle(r=abs(arcRadius)-0.5);
-          //arc(from=from+lead1*normalize(dir1)-center, to=to+lead2*normalize(dir2)-center, center=[0,0], dir=(dist1<0 && dist2<0)?1:-1, r=radius*4);
           translate(-center)
-            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=(dist1<0 && dist2<0)?1:-1, r=radius*4);
+            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=sign(cross(from-center,dir1)), r=(arcRadius+5)*2);
         }
       }
       
       
+      /*
       // Debugging, for visual aid; remove
       translate(from+lead1*normalize(dir1))
         circle(r=2);
@@ -151,7 +152,7 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
           circle(r=abs(radius));
           circle(r=abs(radius)-0.5);
         }
-      
+      */
     }
   } else {
     length = norm(to-from);
@@ -208,13 +209,43 @@ union() {
 //channel([0,10],[0,0], cap="circle");
 
 
-from=[0,20];
-to=[15,0];
-dir1=[-1,0];
-dir2=[0,1];
-channel(from-10*normalize(dir1),from);
-channel(to-10*normalize(dir2),to);
-channel(from,to,dir1,dir2);
+linear_extrude(1) {
+  t = $t;//100;
+  rs = rands(-10,10,100,t);
+
+  from=[rs[0],rs[1]];
+  to=[rs[2],rs[3]];
+  dir1=[rs[4],rs[5]];
+  dir2=[rs[6],rs[7]];
+  echo(from=from);echo(to=to);echo(dir1=dir1);echo(dir2=dir2);
+  echo();
+
+  channel(from-10*normalize(dir1),from,d1=5,d2=1);
+  channel(to-10*normalize(dir2),to,d1=5,d2=1);
+  channel(from,to,dir1,dir2);
+}
+
+
+/*
+{
+  to=[0,10];
+  from=[0,0];
+  dir2=[1,10];
+  dir1=[-1,0.5];
+
+  channel(from-10*normalize(dir1),from,d1=5,d2=1);
+  channel(to-10*normalize(dir2),to,d1=5,d2=1);
+  channel(from,to,dir1,dir2,r=5);
+}
+*/
+
+/*
+{
+  from=[0,10];
+  dir1=[-1,0];
+  echo(crs=cross(from,dir1));
+}
+*/
 
 
 /*

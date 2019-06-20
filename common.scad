@@ -87,7 +87,7 @@ module arc(from=[5,0], to=[0,5], center=[0,0], r=undef, dir=1) {
 /**
 dir1, dir2 give vectors for direction from and to, respectively.  Only works if both are defined.
 If dir1 and dir2, then r can also be applied, which gives the radius of the turn.  If undefined, r defaults to the largest r that can fit.
-
+If dir1 and dir2 run near-parallel, in some cases you may need to turn $fn WAY up to make the edges line up.  On the other hand, I think the path rendered would be infeasible, anyway.
 */
 module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1=undef, d2=undef, cap="none") {
   if (d1 == undef) {
@@ -128,8 +128,6 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
       channel(from=from, to=from+lead1*normalize(dir1));
       channel(from=to, to=to+lead2*normalize(dir2));
       translate(center) {
-          //translate(-center)
-//            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=sign(cross(from-center,dir1)), r=abs(radius*4));
         difference() {
           circle(r=abs(arcRadius)+0.5);
           circle(r=abs(arcRadius)-0.5);
@@ -189,128 +187,19 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
   }
 }
 
-/*
-union() {
-  d1=10;
-  d2=2;
-  l = 50;
-  narrows(d1, d2);
-  
-  translate([0,-l/2-narrowsLength(d1, d2)/2])
-    square([d1, l], center=true);
-  translate([0,l/2+narrowsLength(d1, d2)/2])
-    square([d2, l], center=true);
-  
-}
-*/
-
-//channel([0,0],[10,0], cap="circle");
-//channel([10,0],[0,10], cap="circle");
-//channel([0,10],[0,0], cap="circle");
-
-
-linear_extrude(1) {
-  t = $t;//100;
-  rs = rands(-10,10,100,t);
-
-  from=[rs[0],rs[1]];
-  to=[rs[2],rs[3]];
-  dir1=[rs[4],rs[5]];
-  dir2=[rs[6],rs[7]];
-  echo(from=from);echo(to=to);echo(dir1=dir1);echo(dir2=dir2);
-  echo();
-
-  channel(from-10*normalize(dir1),from,d1=5,d2=1);
-  channel(to-10*normalize(dir2),to,d1=5,d2=1);
-  channel(from,to,dir1,dir2);
-}
-
-
-/*
 {
-  to=[0,10];
-  from=[0,0];
-  dir2=[1,10];
-  dir1=[-1,0.5];
+  channel([0,0],[10,0], cap="circle");
+  channel([10,0],[0,10], cap="circle");
+  channel([0,10],[0,0], cap="circle");
+}
+
+{
+  from=[0,15];
+  to=[15,0];
+  dir1=[1,0];
+  dir2=[0,1];
 
   channel(from-10*normalize(dir1),from,d1=5,d2=1);
   channel(to-10*normalize(dir2),to,d1=5,d2=1);
   channel(from,to,dir1,dir2,r=5);
 }
-*/
-
-/*
-{
-  from=[0,10];
-  dir1=[-1,0];
-  echo(crs=cross(from,dir1));
-}
-*/
-
-
-/*
-a = 360 * $t;
-rot = [[cos(a), -sin(a)],[sin(a), cos(a)]];
-x = rot*[-4,0];
-y = rot*[0,4];
-z = interpolateRotate(x, y, $t)*1.5;
-
-translate(x)
-  circle();
-translate(y)
-  circle();
-translate(z)
-  circle();
-*/
-
-
-//t = $t;
-//a = 360 * t;
-//rot = [[cos(a), -sin(a)],[sin(a), cos(a)]];
-//x = rot*[15,0];
-//y = rot*[0,15];
-//echo(x=x,y=y);
-//
-//circle();
-//translate(x)
-//  circle();
-//translate(y)
-//  circle();
-//
-//translate(interpolateRotate(x, y, 0, dir=1)*1.5)
-//  circle();
-//for (i = [0:1:100]) {
-//  translate(interpolateRotate(x, y, pow(0.8,i), dir=1)*1.5)
-//    circle();
-//}
-//
-//translate(interpolateRotate(x, y, 0, dir=-1)*1.8)
-//  circle();
-//for (i = [0:1:100]) {
-//  translate(interpolateRotate(x, y, pow(0.8,i), dir=-1)*1.8)
-//    circle();
-//}
-//
-///*
-//for (i = [0:1:100]) {
-//  a = pow(0.8,i);
-//  g = angle(x,y)*sign(angle(rot(y,angle(x,y)),x)-angle(rot(x,angle(x,y)),y));
-//  //echo(angle(x,y)*sign(angle(rot(y,angle(x,y)),x)-angle(rot(x,angle(x,y)),y)));
-//  //echo(angle(rot(y,angle(x,y)),x)-angle(rot(x,angle(x,y)),y));
-//  //echo(angle(rot(y,angle(x,y)),x));
-//  //echo(angle(rot(y,angle(x,y)),x));
-//  p = rot(y,angle(x,y));
-//  q = x;
-//  echo(max(-1,(p*q)/(norm(p)*norm(q))));
-//  //echo(angle(rot(x,angle(x,y)),y));
-//  //echo(r=rot(x,angle(x,y)),y=y);
-//  //p = rot(x,angle(x,y));
-//  //q = y;
-//  //echo(acos((p*q)/(norm(p)*norm(q))));
-//  //echo((p*q)/(norm(p)*norm(q)));
-//  tr = [[cos(a*g), -sin(a*g)],[sin(a*g),  cos(a*g)]]*x;
-//  translate(tr*1.5)
-//    circle();
-//}
-//*/
-////acos(max(-1,(a*b)/(norm(a)*norm(b))))

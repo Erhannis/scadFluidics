@@ -173,14 +173,12 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
               translate([0,-d2/2])
                 square(d2,center=true);
             }
-        } else if (cap == "square") { //TODO Not sure abt when d2 != d1
-          translate(from)
-            rotate([0,0,atan2(to[1]-from[1],to[0]-from[0])-90])
-            union() {
-              square(d1, center=true);
-              translate([0, norm(to-from)])
-                square(d2, center=true);
-            }
+        } else if (cap == "square") { //TODO If d1!=d2, the edges don't quite line up to the caps
+         union() {
+            square(d1, center=true);
+            translate([0, norm(to-from)])
+              square(d2, center=true);
+          }
         } else { // "none"
         }
       }

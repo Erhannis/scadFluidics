@@ -125,14 +125,15 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
       //TODO Channel width
       echo(centerDir);
       echo(center);
-      channel(from=from, to=from+lead1*normalize(dir1));
-      channel(from=to, to=to+lead2*normalize(dir2));
+      d3 = (d1+d2)/2; //TODO This will not usually work, but at least it's the prettiest of a variety of ineffective compromises
+      channel(from=from, to=from+lead1*normalize(dir1), d1=d1, d2=d3);
+      channel(from=to, to=to+lead2*normalize(dir2), d1=d2, d2=d3);
       translate(center) {
         difference() {
-          circle(r=abs(arcRadius)+0.5);
-          circle(r=abs(arcRadius)-0.5);
+          circle(r=abs(arcRadius)+(d3/2));
+          circle(r=abs(arcRadius)-(d3/2));
           translate(-center)
-            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=sign(cross(from-center,dir1)), r=(arcRadius+5)*2);
+            arc(from=from+lead1*normalize(dir1), to=to+lead2*normalize(dir2), center=center, dir=sign(cross(from-center,dir1)), r=(arcRadius+5+abs(d1)+abs(d2))*2); // The radius is just a bunch of junk thrown in for just-in-case; just make it bigger than needed, that's all.
         }
       }
       
@@ -197,7 +198,7 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
   dir1=[1,0];
   dir2=[0,1];
 
-  channel(from-10*normalize(dir1),from,d1=5,d2=1);
-  channel(to-10*normalize(dir2),to,d1=5,d2=1);
-  channel(from,to,dir1,dir2,r=5);
+  channel(from-10*normalize(dir1),from,d1=5,d2=3);
+  channel(to-10*normalize(dir2),to,d1=5,d2=2);
+  channel(from,to,dir1,dir2,d1=3,d2=2,r=4);
 }

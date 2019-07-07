@@ -1,5 +1,42 @@
-FOREVER = 1000;
+$FOREVER = 1000;
 $fn = 100;
+
+/**
+A word about the *Endpoints() functions.
+They each return a nested array representing the placement of the inputs/vents/outputs
+of the component, given the parameters.  They are arranged like so:
+[
+  [ // Inputs
+    [<Input1Position>, <Input1Direction>, <Input1ChannelDiam>],
+    [<Input2Position>, <Input2Direction>, <Input2ChannelDiam>],
+    ...
+  ],
+  [ // Outputs
+    [<Output1Position>, <Output1Direction>, <Output1ChannelDiam>],
+    [<Output2Position>, <Output2Direction>, <Output2ChannelDiam>],
+    ...
+  ],
+  [ // Vents
+    [<Vent1Position>, <Vent1Direction>, <Vent1ChannelDiam>],
+    [<Vent2Position>, <Vent2Direction>, <Vent2ChannelDiam>],
+    ...
+  ]
+]
+
+For each endpoint:
+Position: an array of 2 numbers marking the position of the endpoint
+Direction: an array of 2 numbers - if air flowed out of this endpoint, it would be flowing in this direction
+ChannelDiam: one scalar (aka number) representing the channel diameter at the endpoint
+
+With this information, it should be possible to cleanly and smoothly connect channels
+to a given component.
+
+So, for instance,
+
+passiveButtonEndpoints(channelDiam = 3, leadIn = 20, leadOut = 20, sideOut = 20)[1][0][0]
+
+would give you the position of the first (and only) output of the given passiveButton.
+*/
 
 function narrowsLength(d1=10, d2=5) = 2*((max(d1, d2)-min(d1, d2))/(4*(1-(1/sqrt(2)))))/sqrt(2);
 
@@ -89,7 +126,7 @@ dir1, dir2 give vectors for direction from and to, respectively.  Only works if 
 If dir1 and dir2, then r can also be applied, which gives the radius of the turn.  If undefined, r defaults to the largest r that can fit.
 If dir1 and dir2 run near-parallel, in some cases you may need to turn $fn WAY up to make the edges line up.  On the other hand, I think the path rendered would be infeasible, anyway.
 */
-module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1=undef, d2=undef, cap="none") {
+module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1=undef, d2=undef, cap="none", overlap=0.01) {
   if (d1 == undef) {
     channel(from=from, to=to, dir1=dir1, dir2=dir2, r=r, d=d, d1=d, d2=d2, cap=cap);
   } else if (d2 == undef) {
@@ -126,8 +163,8 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
       echo(centerDir);
       echo(center);
       d3 = (d1+d2)/2; //TODO This will not usually work, but at least it's the prettiest of a variety of ineffective compromises
-      channel(from=from, to=from+lead1*normalize(dir1), d1=d1, d2=d3);
-      channel(from=to, to=to+lead2*normalize(dir2), d1=d2, d2=d3);
+      channel(from=from, to=from+(lead1+overlap)*normalize(dir1), d1=d1, d2=d3);
+      channel(from=to, to=to+(lead2+overlap)*normalize(dir2), d1=d2, d2=d3);
       translate(center) {
         difference() {
           circle(r=abs(arcRadius)+(d3/2));

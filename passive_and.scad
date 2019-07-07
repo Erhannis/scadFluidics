@@ -9,7 +9,7 @@ module passiveAnd(
     leadOut = 10,
     size = 1.5,
     ventDiam = undef,
-    ventOutLength = 15
+    ventOutLength = 25
   ) {
     if (ventDiam == undef) {
       passiveAnd(channelDiam, leadIn, leadOut, size, ventDiam=channelDiam, ventOutLength=ventOutLength);
@@ -24,6 +24,17 @@ module passiveAnd(
       channel([xOffset,-leadIn],[xOffset,0],d=channelDiam,cap=cap);
       channel(from=[xOffset,0],to=[0,xOffset*1.5],dir1=[0,1],dir2=[1,-1],d=channelDiam,cap=undef);
 
+      // Vents
+      //TODO No use for ventDiam yet
+      channel([0,xOffset*1.5], [ventOutLength,20], dir1=[1,1], dir2=[-1,0], d=channelDiam);
+      channel([0,xOffset*1.5], [-ventOutLength,20], dir1=[-1,1], dir2=[1,0], d=channelDiam);
+
+      // Output
+      channel([0,xOffset*1.5+channelDiam/2], [0,2*xOffset*1.5], d=channelDiam);
+      translate([0,2*xOffset*1.5])
+        narrows(d1=channelDiam,d2=channelDiam);
+      channel([0,2*xOffset*1.5+narrowsLength(d1=channelDiam,d2=channelDiam)],[0,2*xOffset*1.5+narrowsLength(d1=channelDiam*2,d2=channelDiam)+leadOut],d=channelDiam);
+      
 /*      
       // Vents
       channel([-ventOutLength-xOffset,channelDiam/2],[-xOffset+channelDiam/2,channelDiam/2],d=ventDiam,cap=cap);
@@ -87,7 +98,7 @@ module passiveAnd(
 }
 
 
-/*
+
 {
   sx=45;
   sy=60;
@@ -103,7 +114,7 @@ module passiveAnd(
       cube([sx, sy, 10]);
     scale(rescale)
       linear_extrude(height=FOREVER)
-      passiveInclusiveOr();
+      passiveAnd();
     
     for (o=[[-1,1],[1,1],[-1,-1],[1,-1]]) {
       r=rescale;
@@ -124,6 +135,6 @@ module passiveAnd(
     }
   }
 }
-*/
 
-passiveAnd();
+
+//passiveAnd();

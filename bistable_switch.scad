@@ -1,6 +1,7 @@
 use <common.scad>
 
 FOREVER = 1000;
+$fn = 60;
 
 module bistableSwitch(
     channelDiam = 3,
@@ -57,7 +58,7 @@ module bistableSwitch(
   cover_screw_slop = 0.5;
   rescale = 0.5;
 
-  translate([0,0,-1])
+  translate([0,0,0])
   difference() { // Body
     scale(rescale)
       translate([-sx/2,oy, -3])

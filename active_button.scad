@@ -3,6 +3,7 @@ use <common.scad>
 FOREVER = 1000;
 $fn = 60;
 
+//TODO Doesn't work, yet.
 module activeButton(
     channelDiam = 3,
     leadIn = 20,

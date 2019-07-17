@@ -25,7 +25,9 @@ of the component, given the parameters.  They are arranged like so:
 
 For each endpoint:
 Position: an array of 2 numbers marking the position of the endpoint
-Direction: an array of 2 numbers - if air flowed out of this endpoint, it would be flowing in this direction
+Direction: EITHER:
+  an array of 2 numbers - if air flowed out of this endpoint, it would be flowing in this direction
+  a scalar: 0, meaning it changes levels.  (Goes up or down, in z.)
 ChannelDiam: one scalar (aka number) representing the channel diameter at the endpoint
 
 With this information, it should be possible to cleanly and smoothly connect channels
@@ -37,6 +39,8 @@ passiveButtonEndpoints(channelDiam = 3, leadIn = 20, leadOut = 20, sideOut = 20)
 
 would give you the position of the first (and only) output of the given passiveButton.
 */
+
+//function calcBoundsFromEndpoints(endpoints) = ;
 
 function narrowsLength(d1=10, d2=5) = 2*((max(d1, d2)-min(d1, d2))/(4*(1-(1/sqrt(2)))))/sqrt(2);
 
@@ -122,7 +126,7 @@ module arc(from=[5,0], to=[0,5], center=[0,0], r=undef, dir=1) {
 }
 
 /**
-dir1, dir2 give vectors for direction from and to, respectively.  Only works if both are defined.
+dir1, dir2 give vectors for directions facing INTO from and to, respectively.  Only works if both are defined.
 If dir1 and dir2, then r can also be applied, which gives the radius of the turn.  If undefined, r defaults to the largest r that can fit.
 If dir1 and dir2 run near-parallel, in some cases you may need to turn $fn WAY up to make the edges line up.  On the other hand, I think the path rendered would be infeasible, anyway.
 */
@@ -223,19 +227,21 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
   }
 }
 
-{
-  channel([0,0],[10,0], cap="circle");
-  channel([10,0],[0,10], cap="circle");
-  channel([0,10],[0,0], cap="circle");
-}
+* union() { // Example
+  {
+    channel([0,0],[10,0], cap="circle");
+    channel([10,0],[0,10], cap="circle");
+    channel([0,10],[0,0], cap="circle");
+  }
 
-{
-  from=[0,15];
-  to=[15,0];
-  dir1=[1,0];
-  dir2=[0,1];
+  {
+    from=[0,15];
+    to=[15,0];
+    dir1=[1,0];
+    dir2=[0,1];
 
-  channel(from-10*normalize(dir1),from,d1=5,d2=3);
-  channel(to-10*normalize(dir2),to,d1=5,d2=2);
-  channel(from,to,dir1,dir2,d1=3,d2=2,r=4);
+    channel(from-10*normalize(dir1),from,d1=5,d2=3);
+    channel(to-10*normalize(dir2),to,d1=5,d2=2);
+    channel(from,to,dir1,dir2,d1=3,d2=2,r=4);
+  }
 }

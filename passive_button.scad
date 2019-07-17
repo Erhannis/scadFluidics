@@ -1,6 +1,4 @@
-use <common.scad>
-
-$fn = 60;
+include <common.scad>
 
 // See common.scad for explanation of endpoints
 function passiveButtonEndpoints(

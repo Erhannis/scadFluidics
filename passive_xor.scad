@@ -13,7 +13,7 @@ function passiveXorEndpoints(
   [[[-(size*7),-leadIn-35],[0,-1],channelDiam],
    [[(size*7),-leadIn-35],[0,-1],channelDiam]], // Ins
   passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam)[1], // Outs
-  concat([[[0,-35+2*(size*7)*1.5+narrowsLength(d1=channelDiam,d2=(ventDiam != undef ? ventDiam : channelDiam))+0],0,(ventDiam != undef ? ventDiam : channelDiam)]],passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam)[2]), // Vents
+  concat([[[0,-35+2*(size*7)*1.5+narrowsLength(d1=channelDiam*1.3,d2=(ventDiam != undef ? ventDiam : channelDiam*1.3))+0],0,(ventDiam != undef ? ventDiam : channelDiam*1.3)]],passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam)[2]), // Vents
   ];
 
 /*
@@ -37,7 +37,7 @@ module passiveXorSub1(
     ventOutLength = 25
   ) {
     if (ventDiam == undef) {
-      passiveXorSub1(channelDiam, leadIn, leadOut, size, ventDiam=channelDiam, ventOutLength=ventOutLength);
+      passiveXorSub1(channelDiam, leadIn, leadOut, size, ventDiam=channelDiam*1.3, ventOutLength=ventOutLength);
     } else {
       xOffset = size*7;
       
@@ -56,8 +56,8 @@ module passiveXorSub1(
       // Vent
       channel([0,xOffset*1.5+channelDiam/2], [0,2*xOffset*1.5], d=channelDiam*1.3);
       translate([0,2*xOffset*1.5])
-        narrows(d1=channelDiam,d2=ventDiam);
-      channel([0,2*xOffset*1.5+narrowsLength(d1=channelDiam*1.3,d2=ventDiam)],[0,2*xOffset*1.5+narrowsLength(d1=channelDiam,d2=ventDiam)+leadOut],d=ventDiam,cap="circle");
+        narrows(d1=channelDiam*1.3,d2=ventDiam);
+      channel([0,2*xOffset*1.5+narrowsLength(d1=channelDiam*1.3,d2=ventDiam)],[0,2*xOffset*1.5+narrowsLength(d1=channelDiam*1.3,d2=ventDiam)+leadOut],d=ventDiam,cap="circle");
     }
 }
 

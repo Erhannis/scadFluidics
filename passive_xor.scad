@@ -12,8 +12,8 @@ function passiveXorEndpoints(
   ) = [
   [[[-(size*7),-leadIn-35],[0,-1],channelDiam],
    [[(size*7),-leadIn-35],[0,-1],channelDiam]], // Ins
-  passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam)[1], // Outs
-  concat([[[0,-35+2*(size*7)*1.5+narrowsLength(d1=channelDiam*1.3,d2=(ventDiam != undef ? ventDiam : channelDiam*1.3))+0],0,(ventDiam != undef ? ventDiam : channelDiam*1.3)]],passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam)[2]), // Vents
+  passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam,ventOutLength=ventOutLength)[1], // Outs
+  concat([[[0,-35+2*(size*7)*1.5+narrowsLength(d1=channelDiam*1.3,d2=(ventDiam != undef ? ventDiam : channelDiam*1.3))+0],0,(ventDiam != undef ? ventDiam : channelDiam*1.3)]],passiveInclusiveOrEndpoints(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam,ventOutLength=ventOutLength)[2]), // Vents
   ];
 
 /*
@@ -70,10 +70,9 @@ module passiveXor(
     ventOutLength = 25
   ) {
     translate([0,-35])
-      passiveXorSub1(channelDiam=channelDiam,leadIn=leadIn,leadOut=0,size=size,ventDiam=ventDiam);
-    passiveInclusiveOr(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam);
+      passiveXorSub1(channelDiam=channelDiam,leadIn=leadIn,leadOut=0,size=size,ventDiam=ventDiam,ventOutLength=ventOutLength);
+    passiveInclusiveOr(channelDiam=channelDiam,leadIn=5,leadOut=leadOut,size=size,ventDiam=ventDiam,ventOutLength=ventOutLength);
 }
-
 
 union() {
   sx=45;

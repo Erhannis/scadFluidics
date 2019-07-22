@@ -1,5 +1,5 @@
 $FOREVER = 1000;
-$fn = 100;
+//$fn = 100;
 
 /**
 A word about the *Endpoints() functions.
@@ -164,8 +164,6 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
       arcRadius = norm(from+lead1*normalize(dir1) - center);
       
       //TODO Channel width
-      echo(centerDir);
-      echo(center);
       d3 = (d1+d2)/2; //TODO This will not usually work, but at least it's the prettiest of a variety of ineffective compromises
       channel(from=from, to=from+(lead1+overlap)*normalize(dir1), d1=d1, d2=d3);
       channel(from=to, to=to+(lead2+overlap)*normalize(dir2), d1=d2, d2=d3);
@@ -225,6 +223,14 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
         }
       }
   }
+}
+
+//TODO Copied from misc.scad - just use the dep?
+// Useful for minkowski 2D and 3D shapes together
+$EPS=1e-300;
+module flat3d() {
+  linear_extrude(height=$EPS)
+    children();
 }
 
 * union() { // Example

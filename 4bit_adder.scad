@@ -212,7 +212,7 @@ module encube(bounds, w=1) {
             children();
             translate([bounds[0],bounds[3],bounds[4]]) cube([bounds[1]-bounds[0],bounds[2]-bounds[3],bounds[4]-bounds[5]]);
           }
-          cylinder(d=w*2,h=w*2,center=true);
+          cube([w*2,w*2,w*2],center=true);
         }
         translate([bounds[0],bounds[3],bounds[4]]) cube([bounds[1]-bounds[0],bounds[2]-bounds[3],bounds[4]-bounds[5]]);
       }
@@ -221,12 +221,16 @@ module encube(bounds, w=1) {
   }
 }
 
-chosenLevel = 0;
+scaling = 0.5;
+chosenLevel = 2;
 bounds = [-92.5,92.5,155,-90,(chosenLevel+1)*lh-lh*0.25,chosenLevel*lh-lh*0.25];
-encube(bounds) {
-//  translate([bounds[0],bounds[3],chosenLevel*lh-lh*0.25])
-//    cube([bounds[1]-bounds[0],bounds[2]-bounds[3],10]);
-  screwSize = 3/0.8; // Prescaled for later scaling
+scale(scaling)
+//encube(bounds) {
+difference() {
+  translate([bounds[0],bounds[3],chosenLevel*lh-lh*0.25])
+    cube([bounds[1]-bounds[0],bounds[2]-bounds[3],10]);
+  
+  screwSize = 3/scaling; // Prescaled for later scaling
   inset = screwSize*1.5;
   translate([bounds[0]+inset,bounds[2]-inset,0])
     cylinder(d=screwSize,h=$FOREVER,center=true);

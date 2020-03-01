@@ -163,6 +163,7 @@ union() {
 //channel([10,0],[0,10], cap="circle");
 //channel([0,10],[0,0], cap="circle");
 
+scale(0.1/2)
 {
   sx=80;
   sy=80;
@@ -173,10 +174,20 @@ union() {
   channelDiam = 3;
   sideLengths = 35;
   ventReach = 26;
+  slop = 1.3;
+  
+  io = channelDiam*2;
 
+  translate([-sx/2,sy/2,0])
+  rotate([0,0,90])
+  translate([sx/2,-sy/2,0])
+  translate([-sx/2,-oy,30])
+  translate([0,channelDiam*4,0])
   difference() { // Body
-    translate([-sx/2,oy, -3])
-      cube([sx, sy, 10]);
+    translate([-sx/2,oy, -30])
+      translate([-sx*(slop-1)/2,0,0])
+      cube([sx*slop, sy, 20*3]);
+    translate([io,0,0])
     linear_extrude(height=FOREVER)
       union() {
         bistableSwitch(channelDiam=channelDiam, sideLengths=sideLengths, ventReach=ventReach);
@@ -188,23 +199,12 @@ union() {
           }
         }
       }
+    translate([io,0,0])
     for (i=[0,1])
       mirror([i,0,0])
-      translate([ventReach,25.5,0])
-      cylinder(d=channelDiam*4, h=FOREVER, center=true);
-    for (o=[[-1,1],[1,1],[-1,-1],[1,-1]]) {
-      translate([o[0]*(sx/2-screw_inset),o[1]*(sy/2-screw_inset) + sy/2 + oy,0])
-        cylinder(d=3, h=FOREVER, center=true);
-    }
-  }
-  
-  translate([sx*1.1, 0, 0])
-  difference() { // Cover
-    translate([-sx/2,oy, -3])
-      cube([sx, sy, 4]);
-    for (o=[[-1,1],[1,1],[-1,-1],[1,-1]]) {
-      translate([o[0]*(sx/2-screw_inset),o[1]*(sy/2-screw_inset) + sy/2 + oy,0])
-        cylinder(d=3+cover_screw_slop, h=FOREVER, center=true);
-    }
+      translate([ventReach,25.5,0]) {
+        cylinder(d=channelDiam*4, h=FOREVER, center=true);
+        translate([-channelDiam*2,0,-FOREVER-5]) cube([channelDiam*4,FOREVER,FOREVER]);
+      }
   }
 }

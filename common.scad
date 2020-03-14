@@ -129,7 +129,7 @@ module arc(from=[5,0], to=[0,5], center=[0,0], r=undef, dir=1) {
 dir1, dir2 give vectors for directions facing INTO from and to, respectively.  Only works if both are defined.
 If dir1 and dir2, then r can also be applied, which gives the radius of the turn.  If undefined, r defaults to the largest r that can fit.
 If dir1 and dir2 run near-parallel, in some cases you may need to turn $fn WAY up to make the edges line up.  On the other hand, I think the path rendered would be infeasible, anyway.
-*/
+*/ //TODO Deal with caps when dir1 and dir2 are specified
 module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1=undef, d2=undef, cap="none", overlap=0.01) {
   if (d1 == undef) {
     channel(from=from, to=to, dir1=dir1, dir2=dir2, r=r, d=d, d1=d, d2=d2, cap=cap);

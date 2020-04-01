@@ -129,6 +129,7 @@ module arc(from=[5,0], to=[0,5], center=[0,0], r=undef, dir=1) {
 dir1, dir2 give vectors for directions facing INTO from and to, respectively.  Only works if both are defined.
 If dir1 and dir2, then r can also be applied, which gives the radius of the turn.  If undefined, r defaults to the largest r that can fit.
 If dir1 and dir2 run near-parallel, in some cases you may need to turn $fn WAY up to make the edges line up.  On the other hand, I think the path rendered would be infeasible, anyway.
+Caps include "square", "circle", triangle", "sharp", and "none" (default).
 */
 module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1=undef, d2=undef, cap="none", overlap=0.01) {
   if (d1 == undef) {
@@ -214,10 +215,34 @@ module channel(from=[5,0], to=[10,-10], dir1=undef, dir2=undef, r=undef, d=1, d1
                 square(d2,center=true);
             }
         } else if (cap == "square") { //TODO If d1!=d2, the edges don't quite line up to the caps
-         union() {
+          union() {
             square(d1, center=true);
             translate([0, norm(to-from)])
               square(d2, center=true);
+          }
+        } else if (cap == "triangle") {
+          union() {
+            difference() {
+              rotate(45) square(d1*sqrt(1/2), center=true);
+              translate([0,d1]) square(d1*2,center=true);
+            }
+            translate([0, norm(to-from)])
+              difference() {
+                rotate(45) square(d2*sqrt(1/2), center=true);
+                translate([0,-d2]) square(d2*2,center=true);
+              }
+          }
+        } else if (cap == "sharp") {
+          union() {
+            difference() {
+              scale([1,3]) rotate(45) square(d1*sqrt(1/2), center=true);
+              translate([0,d1]) square(d1*2,center=true);
+            }
+            translate([0, norm(to-from)])
+              difference() {
+                scale([1,3]) rotate(45) square(d2*sqrt(1/2), center=true);
+                translate([0,-d2]) square(d2*2,center=true);
+              }
           }
         } else { // "none"
         }
